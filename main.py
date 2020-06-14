@@ -47,16 +47,19 @@ class Smhi:
         self.data = json.loads(self.resp)
         self.lat = self.data['results'][0]['geometry']['location']['lat']
         self.lon = self.data['results'][0]['geometry']['location']['lng']
+        #print(self.lat)
 
     """Get the data from smhi´s api"""
     def get_forcast(self):
-        self.resp = requests.get(f'https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{self.lon:.4f}/lat/{self.lat:.4f}/data.json').text
+        self.resp = requests.get(f'https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{self.lon:.2f}/lat/{self.lat:.2f}/data.json').text
 
         data = json.loads(self.resp)
-        self.temp = "".join(map(str, data["timeSeries"][2]['parameters'][1]['values']))
-        self.wind_speed = "".join(map(str, data["timeSeries"][2]['parameters'][4]['values']))
-        self.wind_gust = "".join(map(str, data["timeSeries"][2]['parameters'][11]['values']))
+        #print(data["timeSeries"][2]['parameters'][0]['values'])
+        self.temp = "".join(map(str, data["timeSeries"][2]['parameters'][11]['values']))
+        self.wind_speed = "".join(map(str, data["timeSeries"][2]['parameters'][14]['values']))
+        self.wind_gust = "".join(map(str, data["timeSeries"][2]['parameters'][17]['values']))
         self.wcat = data["timeSeries"][2]['parameters'][18]['values']
+
 
 
     """Show the forcast from smhi's api"""
@@ -73,12 +76,16 @@ class Smhi:
 if __name__ == '__main__':
     while True:
         city = input('Ange en stad: ').title()
-        print('-' * 30)
-        s = Smhi(city)
-        s.get_coordinates()
-        s.get_forcast()
-        s.show_forcast()
-        print('-' * 30)
+        if city == 'q':
+            break
+        else:
+            print('-' * 30)
+            s = Smhi(city)
+            s.get_coordinates()
+            s.get_forcast()
+            s.show_forcast()
+            print('-' * 30)
+
 
 
 
